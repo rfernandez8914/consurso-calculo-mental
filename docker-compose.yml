@@ -1,0 +1,17 @@
+services:
+  calculo-mental:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: concurso-calculo-mental
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - TZ=America/Mexico_City
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

@@ -1,0 +1,52 @@
+# Dependencias
+node_modules
+**/node_modules
+
+# Archivos de build
+dist
+**/dist
+tmp
+
+# Git
+.git
+.gitignore
+
+# Replit
+.replit
+.replitignore
+.local
+.cache
+.agents
+
+# Assets adjuntos (no necesarios en producción)
+attached_assets
+
+# Artefactos que no son la app principal
+artifacts/api-server
+artifacts/mockup-sandbox
+
+# TypeScript info
+*.tsbuildinfo
+
+# Logs
+npm-debug.log
+yarn-error.log
+*.log
+
+# IDE
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+nginx.conf
+
+# Scripts de utilidad
+scripts
+
+# README y docs
+README.md
+replit.md
