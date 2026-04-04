@@ -27,4 +27,19 @@ export interface ResultadoRonda {
 }
 
 export type ModoJuego = 'simple' | 'interactivo';
-export type Vista = 'inicio' | 'alumnos' | 'operaciones' | 'juego' | 'resultados';
+export type Vista = 'inicio' | 'alumnos' | 'operaciones' | 'juego' | 'resultados' | 'perfil' | 'admin-usuarios';
+
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'teacher';
+}
+
+export interface UsuarioItem {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}

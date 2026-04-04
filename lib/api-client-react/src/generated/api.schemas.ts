@@ -8,3 +8,45 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface ErrorResponse {
+  error: string;
+}
+
+export interface LoginBody {
+  email: string;
+  password: string;
+}
+
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface UserItem {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
+
+export interface CreateUserBody {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface UpdateUserBody {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
+export interface UpdateProfileBody {
+  name?: string;
+  password?: string;
+  currentPassword?: string;
+}
