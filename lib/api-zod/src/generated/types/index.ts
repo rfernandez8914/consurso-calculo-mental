@@ -6,4 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./authUser";
+export * from "./createUserBody";
+export * from "./errorResponse";
 export * from "./healthStatus";
+export * from "./loginBody";
+export * from "./updateProfileBody";
+export * from "./updateUserBody";
+export * from "./userItem";
