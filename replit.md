@@ -25,3 +25,33 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## Artifacts
+
+### Concurso de Cálculo Mental (`artifacts/calculo-mental`)
+- **Kind**: React + Vite web app
+- **Preview path**: `/`
+- **Tech**: React, Vite, Tailwind CSS, Wouter, Framer Motion, localStorage
+- **Purpose**: Interactive classroom contest app for mental math practice
+- **Features**:
+  - Student management (add/edit/delete/export/import)
+  - Operation management (add/edit/delete/shuffle)
+  - Random student picker with animation
+  - Game modes: Simple (show only) and Interactive (enter answers)
+  - Optional countdown timer per operation
+  - Limit operations per round
+  - Results screen with per-answer breakdown
+  - No-repeat student option
+  - Fullscreen mode
+  - All data persisted in localStorage
+- **Files**:
+  - `src/types/index.ts` — shared TypeScript types
+  - `src/hooks/useLocalStorage.ts` — localStorage hook
+  - `src/hooks/useAppData.ts` — student/operation state management
+  - `src/components/Header.tsx` — app header
+  - `src/components/NavBar.tsx` — navigation bar
+  - `src/pages/Inicio.tsx` — home/dashboard page
+  - `src/pages/GestionAlumnos.tsx` — student management page
+  - `src/pages/GestionOperaciones.tsx` — operation management page
+  - `src/pages/Juego.tsx` — game page (selector + playing + finished)
+  - `src/pages/Resultados.tsx` — results history page

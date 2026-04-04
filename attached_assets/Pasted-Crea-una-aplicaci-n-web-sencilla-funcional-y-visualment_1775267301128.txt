@@ -1,0 +1,201 @@
+Crea una aplicación web sencilla, funcional y visualmente atractiva para usar en clase como dinámica tipo concurso de televisión, enfocada en práctica de cálculo mental para niños.
+
+## Objetivo general
+
+La aplicación debe permitir:
+
+* Administrar una lista de alumnos.
+* Seleccionar de forma aleatoria a un alumno.
+* Mostrar en pantalla una serie de operaciones matemáticas previamente capturadas.
+* Permitir que el alumno responda mentalmente o escribiendo su respuesta.
+* Mostrar al final los resultados correctos para comprobar aciertos.
+* Facilitar la edición de alumnos y de operaciones para poder reutilizar el sistema en diferentes clases.
+
+## Contexto de uso
+
+Esta aplicación será usada por un docente frente al grupo, proyectada en pantalla, como una dinámica divertida para motivar a los alumnos a participar. Debe sentirse como un pequeño concurso escolar, fácil de usar y con botones grandes, diseño limpio y colores amigables.
+
+## Requerimientos funcionales
+
+### 1. Gestión de alumnos
+
+Debe existir una sección para administrar alumnos con las siguientes funciones:
+
+* Agregar alumno.
+* Editar nombre de alumno.
+* Eliminar alumno.
+* Mostrar lista actual de alumnos.
+* Poder guardar la lista localmente en el navegador para que no se pierda al recargar la página.
+
+### 2. Gestión de operaciones matemáticas
+
+Debe existir una sección para administrar operaciones matemáticas:
+
+* Agregar operaciones manualmente, por ejemplo:
+
+  * 8 + 7
+  * 15 - 9
+  * 6 x 4
+  * 18 / 3
+* Editar operaciones existentes.
+* Eliminar operaciones.
+* Mostrar lista actual de operaciones.
+* Guardarlas en almacenamiento local del navegador.
+* Cada operación debe tener:
+
+  * texto de la operación
+  * respuesta correcta
+* La respuesta correcta puede calcularse automáticamente si la operación es válida, pero también debe permitirse capturarla manualmente por si el docente desea usar expresiones personalizadas.
+
+### 3. Selección aleatoria de alumno
+
+Debe existir un botón que diga algo como:
+
+* “Elegir alumno al azar”
+
+Al presionarlo:
+
+* se selecciona aleatoriamente un alumno de la lista,
+* se muestra en pantalla de forma destacada,
+* con una animación sencilla o efecto visual para dar sensación de concurso.
+
+### 4. Dinámica de juego
+
+Cuando ya haya un alumno seleccionado:
+
+* se debe poder iniciar una ronda.
+* en la ronda se mostrará la lista de operaciones cargadas.
+* debe existir un modo de visualización grande para proyección.
+* cada operación debe mostrarse claramente y una por una, o bien en lista, según convenga.
+* agrega un botón para avanzar entre operaciones si eliges mostrar una por una.
+
+### 5. Respuestas del alumno
+
+Agregar dos modos:
+
+* Modo simple: solo mostrar las operaciones, sin capturar respuesta en el sistema.
+* Modo interactivo: permitir escribir la respuesta del alumno en cada operación.
+
+En modo interactivo:
+
+* debe haber campo para capturar respuesta.
+* al final debe compararse con la respuesta correcta.
+* mostrar cuántos aciertos tuvo.
+* mostrar cuáles fueron correctas e incorrectas.
+
+### 6. Mostrar resultados
+
+Al terminar la ronda:
+
+* mostrar una pantalla de resultados clara y llamativa.
+* incluir:
+
+  * nombre del alumno
+  * lista de operaciones
+  * respuesta del alumno
+  * resultado correcto
+  * estatus correcto/incorrecto
+  * total de aciertos
+* resaltar visualmente aciertos e incorrectas.
+
+### 7. Interfaz
+
+La aplicación debe tener al menos estas pantallas o secciones:
+
+* Inicio / Panel principal
+* Administración de alumnos
+* Administración de operaciones
+* Pantalla de juego / proyección
+* Pantalla de resultados
+
+## Requerimientos visuales
+
+Quiero un diseño:
+
+* amigable para niños
+* limpio
+* moderno
+* con botones grandes
+* texto grande para proyectar en salón
+* colores alegres pero no saturados
+* que se sienta como un concurso escolar o programa de preguntas
+
+Agregar:
+
+* encabezado con nombre del sistema, por ejemplo: “Concurso de Cálculo Mental”
+* tarjetas o paneles visuales
+* animaciones suaves
+* buen contraste para proyectar en pantalla
+
+## Requerimientos técnicos
+
+* Desarrolla la aplicación en una sola app web lista para correr en Replit.
+* Usa una arquitectura simple y mantenible.
+* Puedes usar:
+
+  * Frontend: HTML, CSS y JavaScript puro, o React si lo consideras mejor.
+* Si usas React, deja el proyecto bien estructurado y fácil de editar.
+* No es necesario backend complejo.
+* Toda la información puede guardarse en localStorage.
+* Debe funcionar bien en navegador de escritorio.
+* Debe ser fácil de ejecutar desde Replit sin configuraciones complicadas.
+
+## Funcionalidades extra deseables
+
+Si es posible, agrega estas mejoras:
+
+* Botón para reiniciar ronda.
+* Opción para mezclar aleatoriamente las operaciones.
+* Opción para limitar número de operaciones por ronda.
+* Temporizador opcional por operación.
+* Sonidos o efectos simples al elegir alumno o mostrar resultados.
+* Botón de “Mostrar respuestas correctas”.
+* Modo pantalla completa.
+* Opción para no repetir al mismo alumno hasta agotar la lista.
+* Opción para exportar o importar lista de alumnos y operaciones en JSON.
+
+## Reglas importantes
+
+* El sistema debe ser sencillo de usar para un docente sin conocimientos técnicos.
+* Todo debe estar en español.
+* El código debe quedar limpio, comentado y fácil de modificar.
+* Debe incluir instrucciones breves de uso dentro de la app.
+* Evita dependencias innecesarias.
+* Si una lista está vacía, mostrar mensajes claros, por ejemplo:
+
+  * “No hay alumnos registrados”
+  * “No hay operaciones capturadas”
+
+## Entregables esperados
+
+Genera:
+
+1. La aplicación completa.
+2. Código fuente organizado.
+3. Un README en español con:
+
+   * cómo ejecutar el proyecto en Replit
+   * cómo usarlo
+   * cómo editar alumnos
+   * cómo editar operaciones
+4. Datos de ejemplo precargados:
+
+   * al menos 5 alumnos
+   * al menos 8 operaciones matemáticas
+
+## Criterios de aceptación
+
+La solución será correcta si:
+
+* permite agregar, editar y eliminar alumnos,
+* permite agregar, editar y eliminar operaciones,
+* selecciona un alumno al azar,
+* muestra las operaciones en pantalla,
+* permite mostrar resultados correctos al final,
+* funciona completamente desde el navegador,
+* guarda la información aunque se recargue la página,
+* tiene una interfaz atractiva y apta para proyección en clase.
+
+## Petición final
+
+Construye la aplicación completa y deja el código listo para ejecutar en Replit. Prioriza simplicidad, usabilidad y buena presentación visual.
