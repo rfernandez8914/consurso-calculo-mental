@@ -1,0 +1,47 @@
+# ============================================================
+# Imagen de DESARROLLO con hot reload
+# Los archivos fuente se montan como volumen, así los cambios
+# en src/ se reflejan en tiempo real sin reconstruir la imagen.
+# ============================================================
+FROM node:24-slim
+
+# Instalar pnpm
+RUN npm install -g pnpm@latest
+
+WORKDIR /app
+
+# Copiar solo los manifiestos de dependencias primero
+# (optimiza el cache: solo reinstala si cambian los lock files)
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+COPY tsconfig.json tsconfig.base.json ./
+
+# Copiar manifiestos de los paquetes compartidos
+COPY lib/api-client-react/package.json ./lib/api-client-react/
+COPY lib/api-spec/package.json         ./lib/api-spec/
+COPY lib/api-zod/package.json          ./lib/api-zod/
+COPY lib/db/package.json               ./lib/db/
+
+# Copiar manifest de la app
+COPY artifacts/calculo-mental/package.json ./artifacts/calculo-mental/
+
+# Crear directorio src vacío para que pnpm no falle
+RUN mkdir -p artifacts/calculo-mental/src
+
+# Instalar todas las dependencias del workspace
+RUN pnpm install --frozen-lockfile
+
+# Copiar el código fuente completo de la app
+# (en dev esto se sobreescribirá por el volumen montado)
+COPY artifacts/calculo-mental/ ./artifacts/calculo-mental/
+COPY lib/ ./lib/
+
+# Puerto de Vite dev server
+EXPOSE 3000
+
+# Variables de entorno para desarrollo
+ENV PORT=3000
+ENV BASE_PATH=/
+ENV NODE_ENV=development
+
+# Iniciar el servidor de desarrollo de Vite
+CMD ["pnpm", "--filter", "@workspace/calculo-mental", "run", "dev"]

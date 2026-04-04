@@ -1,0 +1,30 @@
+services:
+  calculo-mental-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: calculo-mental-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # -------------------------------------------------------
+      # Hot reload: monta solo el código fuente de la app.
+      # Los cambios en src/ se reflejan instantáneamente.
+      # node_modules permanece dentro del contenedor.
+      # -------------------------------------------------------
+      - ./artifacts/calculo-mental/src:/app/artifacts/calculo-mental/src
+      - ./artifacts/calculo-mental/index.html:/app/artifacts/calculo-mental/index.html
+      - ./artifacts/calculo-mental/vite.config.ts:/app/artifacts/calculo-mental/vite.config.ts
+      - ./artifacts/calculo-mental/tsconfig.json:/app/artifacts/calculo-mental/tsconfig.json
+    environment:
+      - PORT=3000
+      - BASE_PATH=/
+      - NODE_ENV=development
+    restart: unless-stopped
+    # El servidor estará listo cuando Vite responda
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s

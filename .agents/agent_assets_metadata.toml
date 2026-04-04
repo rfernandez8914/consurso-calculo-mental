@@ -5,4 +5,4 @@ generated = []
 id = "GFbMKdzGanacowlwAFCVm"
 uri = "file://concurso-calculo-mental.tar.gz"
 type = "unspecified"
-title = "Concurso de Cálculo Mental — Proyecto completo"
+title = "Concurso de Cálculo Mental — Con Docker dev + prod"

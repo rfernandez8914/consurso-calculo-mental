@@ -15,3 +15,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
+    # Montar un volumen nombrado para que nginx pueda escribir logs
+    volumes:
+      - nginx_logs:/var/log/nginx
+
+volumes:
+  nginx_logs:
