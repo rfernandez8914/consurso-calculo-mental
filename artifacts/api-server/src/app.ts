@@ -7,6 +7,9 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Confiar en el proxy inverso (Apache/nginx) para X-Forwarded-Proto y X-Forwarded-For
+app.set("trust proxy", 1);
+
 app.use(
   pinoHttp({
     logger,
@@ -45,7 +48,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
   }),
