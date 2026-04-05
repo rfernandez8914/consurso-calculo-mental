@@ -1,0 +1,83 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Docker Compose para VPS con Apache como reverse proxy SSL
+#
+# Servicios:
+#   db   — PostgreSQL 16 (solo acceso interno, puerto NO expuesto al host)
+#   api  — API Express 5 (aplica migraciones y seed al arrancar)
+#   web  — nginx sirviendo la SPA + haciendo proxy de /api/ al servicio api
+#
+# Uso:
+#   docker compose -f docker-compose.vps.yml --env-file .env.vps up --build -d
+#
+# IMPORTANTE: Copia .env.vps.example a .env.vps y rellena todos los valores
+# antes de ejecutar.
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Base de datos ──────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-calculodb}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD es requerido}
+      POSTGRES_DB:       ${POSTGRES_DB:-calculodb}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - calculo_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-calculodb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── API Server (Express 5) ─────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    restart: unless-stopped
+    env_file: .env.vps
+    environment:
+      NODE_ENV: production
+      PORT:     8080
+      DATABASE_URL: >-
+        postgres://${POSTGRES_USER:-calculodb}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-calculodb}
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8080"
+    networks:
+      - calculo_net
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:8080/api/healthz').then(r=>process.exit(r.ok?0:1))\""]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── Frontend (nginx + proxy /api/) ────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WEB_PORT:-4201}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - calculo_net
+
+volumes:
+  db_data:
+
+networks:
+  calculo_net:
+    driver: bridge
