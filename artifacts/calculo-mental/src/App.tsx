@@ -18,10 +18,15 @@ import type { Vista, ResultadoRonda } from "@/types";
 
 const queryClient = new QueryClient();
 
-function AppContent() {
-  const { user, loading } = useAuth();
+// Renderiza la app completa solo cuando hay sesión activa.
+// Los hooks de datos usan el ID del usuario como prefijo en localStorage,
+// garantizando que cada maestro acceda únicamente a sus propios datos.
+function AuthenticatedApp({ userId, role }: { userId: number; role: string }) {
   const [vista, setVista] = useState<Vista>("inicio");
-  const [resultados, setResultados] = useLocalStorage<ResultadoRonda[]>("calculo-resultados", []);
+  const [resultados, setResultados] = useLocalStorage<ResultadoRonda[]>(
+    `u${userId}-calculo-resultados`,
+    [],
+  );
 
   const {
     alumnos,
@@ -37,7 +42,7 @@ function AppContent() {
     mezclarOperaciones,
     exportarDatos,
     importarDatos,
-  } = useAppData();
+  } = useAppData(userId);
 
   const handleGuardarResultado = (resultado: ResultadoRonda) => {
     setResultados((prev) => [...prev, resultado]);
@@ -47,26 +52,9 @@ function AppContent() {
     setVista("juego");
   };
 
-  // Pantalla de carga mientras se verifica la sesión
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <span className="inline-block w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin mb-4" />
-          <p className="text-muted-foreground text-sm">Cargando...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Si no hay sesión → Login
-  if (!user) {
-    return <Login />;
-  }
-
   // Solo admin puede ver la pantalla de administración
   const vistaFinal: Vista =
-    vista === "admin-usuarios" && user.role !== "admin" ? "inicio" : vista;
+    vista === "admin-usuarios" && role !== "admin" ? "inicio" : vista;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -116,13 +104,34 @@ function AppContent() {
           />
         )}
         {vistaFinal === "perfil" && <Perfil />}
-        {vistaFinal === "admin-usuarios" && user.role === "admin" && <AdminUsuarios />}
+        {vistaFinal === "admin-usuarios" && role === "admin" && <AdminUsuarios />}
       </main>
       <footer className="border-t border-border py-3 text-center text-xs text-muted-foreground">
         Concurso de Cálculo Mental · Los datos se guardan automáticamente en tu navegador
       </footer>
     </div>
   );
+}
+
+function AppContent() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <span className="inline-block w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin mb-4" />
+          <p className="text-muted-foreground text-sm">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Login />;
+  }
+
+  return <AuthenticatedApp userId={user.id} role={user.role} />;
 }
 
 function App() {

@@ -22,9 +22,18 @@ const OPERACIONES_INICIALES: Operacion[] = [
   { id: "10", texto: "5 × 11", respuesta: 55 },
 ];
 
-export function useAppData() {
-  const [alumnos, setAlumnos] = useLocalStorage<Alumno[]>("calculo-alumnos", ALUMNOS_INICIALES);
-  const [operaciones, setOperaciones] = useLocalStorage<Operacion[]>("calculo-operaciones", OPERACIONES_INICIALES);
+// userId asegura que cada maestro tenga sus propios datos en localStorage
+export function useAppData(userId: number) {
+  const prefix = `u${userId}`;
+
+  const [alumnos, setAlumnos] = useLocalStorage<Alumno[]>(
+    `${prefix}-calculo-alumnos`,
+    ALUMNOS_INICIALES,
+  );
+  const [operaciones, setOperaciones] = useLocalStorage<Operacion[]>(
+    `${prefix}-calculo-operaciones`,
+    OPERACIONES_INICIALES,
+  );
 
   const agregarAlumno = (nombre: string) => {
     const nuevo: Alumno = {
