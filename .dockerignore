@@ -21,8 +21,7 @@ tmp
 # Assets adjuntos (no necesarios en producción)
 attached_assets
 
-# Artefactos que no son la app principal
-artifacts/api-server
+# Artefactos que no se necesitan en ningún build
 artifacts/mockup-sandbox
 
 # TypeScript info
