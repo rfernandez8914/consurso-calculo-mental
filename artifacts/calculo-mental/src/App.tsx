@@ -11,16 +11,14 @@ import { Resultados } from "@/pages/Resultados";
 import { Login } from "@/pages/Login";
 import { Perfil } from "@/pages/Perfil";
 import { AdminUsuarios } from "@/pages/AdminUsuarios";
-import { useAppData } from "@/hooks/useAppData";
+import { useAlumnos } from "@/hooks/useAlumnos";
+import { useOperaciones } from "@/hooks/useOperaciones";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import type { Vista, ResultadoRonda } from "@/types";
 
 const queryClient = new QueryClient();
 
-// Renderiza la app completa solo cuando hay sesión activa.
-// Los hooks de datos usan el ID del usuario como prefijo en localStorage,
-// garantizando que cada maestro acceda únicamente a sus propios datos.
 function AuthenticatedApp({ userId, role }: { userId: number; role: string }) {
   const [vista, setVista] = useState<Vista>("inicio");
   const [resultados, setResultados] = useLocalStorage<ResultadoRonda[]>(
@@ -30,19 +28,22 @@ function AuthenticatedApp({ userId, role }: { userId: number; role: string }) {
 
   const {
     alumnos,
-    operaciones,
     agregarAlumno,
     editarAlumno,
     eliminarAlumno,
     marcarAlumnoUsado,
     resetearAlumnos,
+    importarAlumnos,
+  } = useAlumnos();
+
+  const {
+    operaciones,
     agregarOperacion,
     editarOperacion,
     eliminarOperacion,
     mezclarOperaciones,
-    exportarDatos,
-    importarDatos,
-  } = useAppData(userId);
+    importarOperaciones,
+  } = useOperaciones();
 
   const handleGuardarResultado = (resultado: ResultadoRonda) => {
     setResultados((prev) => [...prev, resultado]);
@@ -52,7 +53,34 @@ function AuthenticatedApp({ userId, role }: { userId: number; role: string }) {
     setVista("juego");
   };
 
-  // Solo admin puede ver la pantalla de administración
+  const exportarDatos = () => {
+    const datos = {
+      alumnos: alumnos.map((a) => ({ nombre: a.nombre })),
+      operaciones: operaciones.map((op) => ({ texto: op.texto, respuesta: op.respuesta })),
+    };
+    const blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "concurso-calculo-mental.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importarDatos = async (json: string): Promise<boolean> => {
+    try {
+      const datos = JSON.parse(json) as {
+        alumnos?: { nombre: string }[];
+        operaciones?: { texto: string; respuesta: string | number }[];
+      };
+      if (datos.alumnos) await importarAlumnos(datos.alumnos);
+      if (datos.operaciones) await importarOperaciones(datos.operaciones);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const vistaFinal: Vista =
     vista === "admin-usuarios" && role !== "admin" ? "inicio" : vista;
 
@@ -107,7 +135,7 @@ function AuthenticatedApp({ userId, role }: { userId: number; role: string }) {
         {vistaFinal === "admin-usuarios" && role === "admin" && <AdminUsuarios />}
       </main>
       <footer className="border-t border-border py-3 text-center text-xs text-muted-foreground">
-        Concurso de Cálculo Mental · Los datos se guardan automáticamente en tu navegador
+        Concurso de Cálculo Mental · Los datos se guardan en tu cuenta
       </footer>
     </div>
   );

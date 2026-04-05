@@ -6,7 +6,7 @@ interface InicioProps {
   totalAlumnos: number;
   totalOperaciones: number;
   onCambiarVista: (vista: Vista) => void;
-  onImportar: (json: string) => boolean;
+  onImportar: (json: string) => Promise<boolean>;
   onExportar: () => void;
 }
 
@@ -17,9 +17,9 @@ export function Inicio({ totalAlumnos, totalOperaciones, onCambiarVista, onImpor
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       const json = ev.target?.result as string;
-      const ok = onImportar(json);
+      const ok = await onImportar(json);
       if (!ok) alert("Error al importar el archivo. Verifica que sea un JSON válido.");
       else alert("Datos importados correctamente.");
     };
