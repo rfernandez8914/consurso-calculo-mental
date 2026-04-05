@@ -42,13 +42,19 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `POST /api/users` — create teacher (admin only)
   - `PUT /api/users/:id` — update user (admin only)
   - `DELETE /api/users/:id` — delete user (admin only)
-- **Database schema**: `lib/db/src/schema/users.ts` — `users` table
+  - `GET/POST/PUT/DELETE/PATCH /api/alumnos` — students CRUD (per-user, requires auth)
+  - `POST /api/alumnos/reset` — mark all students as unused
+  - `POST /api/alumnos/importar` — bulk replace students
+  - `GET/POST/PUT/DELETE /api/operaciones` — operations CRUD (per-user, requires auth)
+  - `POST /api/operaciones/mezclar` — shuffle operations order
+  - `POST /api/operaciones/importar` — bulk replace operations
+- **Database schema**: `lib/db/src/schema/` — `users`, `alumnos`, `operaciones` tables
 - **Seed**: `artifacts/api-server/src/seed.ts` — creates superadmin
 
 ### Concurso de Cálculo Mental (`artifacts/calculo-mental`)
 - **Kind**: React + Vite web app (port 20250)
 - **Preview path**: `/`
-- **Tech**: React, Vite, Tailwind CSS, Wouter, Framer Motion, localStorage
+- **Tech**: React, Vite, Tailwind CSS, Wouter, Framer Motion, TanStack Query
 - **Auth**: Frontend auth via `useAuth` hook → calls API server via Vite proxy
 - **Purpose**: Interactive classroom contest app for mental math practice
 
@@ -70,14 +76,16 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - Results screen with per-answer breakdown
 - No-repeat student option
 - Fullscreen mode
-- All contest data persisted in localStorage
+- **Alumnos and operaciones stored in PostgreSQL** (per authenticated user) via API
+- Round results persisted in localStorage (session-scoped, prefixed with user ID)
 - Profile page: update own name and password
 - Admin panel: create/edit/delete teacher users
 
 #### Key Files
 - `src/types/index.ts` — shared TypeScript types (incl. AuthUser, UsuarioItem)
 - `src/hooks/useLocalStorage.ts` — localStorage hook
-- `src/hooks/useAppData.ts` — student/operation state management
+- `src/hooks/useAlumnos.ts` — student state via API (TanStack Query)
+- `src/hooks/useOperaciones.ts` — operations state via API (TanStack Query)
 - `src/hooks/useAuth.ts` — auth context (AuthProvider, useAuth hook)
 - `src/components/Header.tsx` — app header with role badge
 - `src/components/NavBar.tsx` — navigation bar with user info and logout
@@ -92,14 +100,10 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ## Database
 
-- **Table**: `users`
-  - `id` serial PK
-  - `name` text NOT NULL
-  - `email` text NOT NULL UNIQUE
-  - `password` text NOT NULL (bcrypt hash)
-  - `role` text NOT NULL DEFAULT 'teacher' ('admin' | 'teacher')
-  - `created_at` timestamptz
-  - `updated_at` timestamptz
+- **Table**: `users` — id, name, email, password (bcrypt), role, created_at, updated_at
+- **Table**: `alumnos` — id, user_id (FK→users), nombre, usado, orden, created_at
+- **Table**: `operaciones` — id, user_id (FK→users), texto, respuesta (text), orden, created_at
+- Cascading delete: deleting a user removes all their alumnos and operaciones
 
 ## Docker
 
